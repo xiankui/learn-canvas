@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>变形 Transformations</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="css/normalize.css" />
+		<style>
+			canvas {
+				display: block;
+				margin: 0 auto;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>变形 Transformations</h1>
+		<article>
+			<section>
+				<h2>状态的保存和恢复 Saving and restoring state</h2>
+				<canvas id="save_restore_canvas"></canvas>
+				<div>
+					<ul>
+						<li>Canvas 状态是以堆(stack)的方式保存的，每一次调用 save 方法，当前的状态就会被推入堆中保存起来。</li>
+						<li>每一次调用 restore 方法，上一个保存的状态就从堆中弹出，所有设定都恢复。</li>
+						<li></li>
+					</ul>
+				</div>
+			</section>
+			<section>
+				<h2>移动 Translating</h2>
+				<canvas id="translate_canvas"></canvas>
+			</section>
+			<section>
+				<h2>旋转 Rotating</h2>
+				<canvas id="rotate_canvas"></canvas>
+			</section>
+			<section>
+				<h2>缩放 Scaling</h2>
+				<canvas id="scale_canvas"></canvas>
+			</section>
+		</article>
+		<footer>
+			<nav>
+				<ul>
+					<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/Canvas_tutorial/Transformations" target="_blank">source from mozilla</a></li>
+					<li><a href="Compositing.html">next page</a></li>
+				</ul>
+			</nav>
+		</footer>
+		<script>
+			var j = function (id) {
+				return document.getElementById(id);
+			};
+			
+			/**
+			 * saving and restoring state
+			**/
+			(function ($) {
+				var ctx = $("save_restore_canvas").getContext("2d");
+
+				ctx.fillRect(0,0,150,150);
+				ctx.save();
+
+				ctx.fillStyle = "#09f";
+				ctx.fillRect(15,15,120,120);
+				ctx.save();
+
+				ctx.fillStyle = "#fff";
+				ctx.globalAlpha = 0.5;
+				ctx.fillRect(30,30,90,90);
+				ctx.restore();
+
+				ctx.fillRect(45,45,60,60);
+				ctx.restore();
+
+				ctx.fillRect(60,60,30,30);
+			})(j);
+
+			/**
+			 * translate
+			**/
+			(function ($) {
+				$("translate_canvas").height = 300;
+				var ctx = $("translate_canvas").getContext("2d");
+
+				ctx.fillRect(0,0,300,300);
+				for (var i=0;i<3;i++) {
+					for (var j=0;j<3;j++) {
+					  ctx.save();
+					  ctx.strokeStyle = "#9CFF00";
+					  ctx.translate(50+j*100,50+i*100);
+					  drawSpirograph(ctx,20*(j+2)/(j+1),-8*(i+3)/(i+1),10);
+					  ctx.restore();
+					}
+				}
+			})(j);
+
+			/**
+			 * rotate
+			**/
+			(function ($) {
+				var ctx = $("rotate_canvas").getContext("2d");
+
+				ctx.translate(75,75);
+				for (var i=1;i<6;i++){ // Loop through rings (from inside to out)
+				    ctx.save();
+				    ctx.fillStyle = 'rgb('+(51*i)+','+(255-51*i)+',255)';
+
+				    for (var j=0;j<i*6;j++){ // draw individual dots
+				      ctx.rotate(Math.PI*2/(i*6));
+				      ctx.beginPath();
+				      ctx.arc(0,i*12.5,5,0,Math.PI*2,true);
+				      ctx.fill();
+				    }
+
+				    ctx.restore();
+				}
+			})(j);
+
+			/**
+			 * scale
+			**/
+			(function ($) {
+				var ctx = $("scale_canvas").getContext("2d");
+
+				$("scale_canvas").height = 300;
+				ctx.fillRect(0,0,300,300);
+				ctx.strokeStyle = "#fc0";
+				ctx.lineWidth = 1.5;
+
+				// Uniform scaling
+				ctx.save()
+				ctx.translate(50,50);
+				drawSpirograph(ctx,22,6,5);  // no scaling
+
+				ctx.translate(100,0);
+				ctx.scale(0.75,0.75);
+				drawSpirograph(ctx,22,6,5);
+
+				ctx.translate(133.333,0);
+				ctx.scale(0.75,0.75);
+				drawSpirograph(ctx,22,6,5);
+				ctx.restore();
+
+				// Non-uniform scaling (y direction)
+				ctx.strokeStyle = "#0cf";
+				ctx.save()
+				ctx.translate(50,150);
+				ctx.scale(1,0.75);
+				drawSpirograph(ctx,22,6,5);
+
+				ctx.translate(100,0);
+				ctx.scale(1,0.75);
+				drawSpirograph(ctx,22,6,5);
+
+				ctx.translate(100,0);
+				ctx.scale(1,0.75);
+				drawSpirograph(ctx,22,6,5);
+				ctx.restore();
+
+				// Non-uniform scaling (x direction)
+				ctx.strokeStyle = "#cf0";
+				ctx.save()
+				ctx.translate(50,250);
+				ctx.scale(0.75,1);
+				drawSpirograph(ctx,22,6,5);
+
+				ctx.translate(133.333,0);
+				ctx.scale(0.75,1);
+				drawSpirograph(ctx,22,6,5);
+
+				ctx.translate(177.777,0);
+				ctx.scale(0.75,1);
+				drawSpirograph(ctx,22,6,5);
+				ctx.restore();
+			})(j);
+
+
+
+			function drawSpirograph(ctx,R,r,O){
+			  var x1 = R-O;
+			  var y1 = 0;
+			  var i  = 1;
+			  ctx.beginPath();
+			  ctx.moveTo(x1,y1);
+			  do {
+			    if (i>20000) break;
+			    var x2 = (R+r)*Math.cos(i*Math.PI/72) - (r+O)*Math.cos(((R+r)/r)*(i*Math.PI/72))
+			    var y2 = (R+r)*Math.sin(i*Math.PI/72) - (r+O)*Math.sin(((R+r)/r)*(i*Math.PI/72))
+			    ctx.lineTo(x2,y2);
+			    x1 = x2;
+			    y1 = y2;
+			    i++;
+			  } while (x2 != R-O && y2 != 0 );
+			  ctx.stroke();
+			}
+		</script>
+	</body>
+</html>

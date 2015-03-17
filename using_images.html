@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>using images</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="css/normalize.css" />
+		<style>
+			canvas {
+				border: 1px solid #00f;
+				/*
+				background-image: url(https://mdn.mozillademos.org/files/206/Canvas_backdrop.png);
+				background-repeat: no-repeat;
+				*/
+			}
+		</style>
+	</head>
+	<body onload="draw();">
+		<h1>应用图像 using images</h1>
+		<section>
+			<h2>using image</h2>
+			<canvas id="image_canvas"></canvas>
+		</section>
+		<footer>
+			<nav>
+				<ul>
+					<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/Canvas_tutorial/Using_images" target="_blank">source from mozilla</a></li>
+					<li><a href="Applying_styles_and_colors.html">next page</a></li>
+				</ul>
+			</nav>
+		</footer>
+		<script>
+			function draw() {
+				var canvas = document.getElementById("image_canvas");
+
+				if (canvas.getContext) {
+					var ctx = canvas.getContext("2d");
+
+					var img = new Image();
+					img.src = "https://mdn.mozillademos.org/files/206/Canvas_backdrop.png";
+					img.onload = function () {
+						ctx.drawImage(img, 0, 0);
+						ctx.beginPath();
+				        ctx.moveTo(30,96);
+				        ctx.lineTo(70,66);
+				        ctx.lineTo(103,76);
+				        ctx.lineTo(170,15);
+				        ctx.stroke();
+					};
+				}
+			}
+		</script>
+	</body>
+</html>

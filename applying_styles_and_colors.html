@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>运用样式与颜色</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="css/normalize.css" />
+		<style>
+			canvas {
+				border: 1px solid #00f;
+			}
+		</style>
+	</head>
+	<body onload="draw();">
+		<h1>运用样式与颜色</h1>
+		<section>
+			<h2>using Colors</h2>
+			<canvas id="fillStyle_canvas"></canvas>
+			<h3>
+				fillStyle = color
+			</h3>
+			<canvas id="strokeStyle_canvas"></canvas>
+			<h3>strokeStyle = color</h3>
+		</section>
+		<section>
+			<h2>globalAlpha = transparency value OR	rgba(,,,.5)</h2>
+			<canvas id="alpha_canvas"></canvas>
+		</section>
+		<section>
+			<h2>text-shadow</h2>
+			<canvas id="text_canvas"></canvas>
+		</section>
+		<footer>
+			<nav>
+				<ul>
+					<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/Canvas_tutorial/Applying_styles_and_colors" target="_blank">source from mozilla</a></li>
+					<li><a href="Transformations.html">next page</a></li>
+				</ul>
+			</nav>
+		</footer>
+		<script>
+			function draw() {
+			  var fillStyle_canvas = document.getElementById('fillStyle_canvas');
+			  var strokeStyle_canvas = document.getElementById("strokeStyle_canvas");
+			  var alpha_canvas = document.getElementById("alpha_canvas");
+			  var text_canvas = document.getElementById("text_canvas");
+
+			  if (fillStyle_canvas.getContext) {
+			  	// fillStyle
+			  	var fillStyle_ctx = fillStyle_canvas.getContext("2d");
+
+			  	for (var i=0;i<6;i++){
+			  	  for (var j=0;j<6;j++){
+			  	    fillStyle_ctx.fillStyle = 'rgb(' + Math.floor(255-42.5*i) + ',' + 
+			  	                     Math.floor(255-42.5*j) + ',0)';
+			  	    fillStyle_ctx.fillRect(j*25,i*25,25,25);
+			  	  }
+			  	}
+
+
+			  	// strokeStyle
+			  	var strokeStyle_ctx = strokeStyle_canvas.getContext("2d");
+
+			  	for (var i=0; i<6; i++) {
+			  		for (var j=0; j<6; j++) {
+			  			strokeStyle_ctx.strokeStyle = 'rgb(0,'
+			  										+ Math.floor(255-42.5*i) +','
+			  										+ Math.floor(255-42.5*j) +')';
+						strokeStyle_ctx.beginPath();
+						strokeStyle_ctx.arc(12.5+j*25, 12.5+i*25, 10, 0, Math.PI*2, true);
+						strokeStyle_ctx.stroke();
+			  		}
+			  	}
+
+
+			  	// alpha canvas
+			  	var alpha_ctx = alpha_canvas.getContext("2d");
+
+			  	alpha_ctx.fillStyle = "#fd0";
+			  	alpha_ctx.fillRect(0,0,75,75);
+			  	alpha_ctx.fillStyle = "#6c0";
+			  	alpha_ctx.fillRect(75,0,75,75);
+			  	alpha_ctx.fillStyle = "#09f";
+			  	alpha_ctx.fillRect(0,75,75,75);
+			  	alpha_ctx.fillStyle = "#f30";
+			  	alpha_ctx.fillRect(75,75,75,75);
+
+			  	alpha_ctx.fillStyle = "rgba(255,255,255,0.2)";
+			  	// or alpha_ctx.globalAlpha = 0.2;
+
+			  	for (var i=0;i<7;i++){
+		  	      alpha_ctx.beginPath();
+		  	      alpha_ctx.arc(75,75,10+10*i,0,Math.PI*2,true);
+		  	      alpha_ctx.fill();
+			  	}
+
+
+			  	// text canvas
+			  	var text_ctx = text_canvas.getContext("2d");
+
+			  	text_ctx.font = "28px Times New Roman";
+			  	text_ctx.shadowOffsetX = 2;
+			  	text_ctx.shadowOffsetY = 2;
+			  	text_ctx.shadowBlur = 2;
+			  	text_ctx.shadowColor = "rgba(0,0,0,0.5)";
+			  	
+			  	text_ctx.fillText("Sample String", 5, 30);
+			  }
+			}
+		</script>
+	</body>
+</html>

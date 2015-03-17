@@ -1,0 +1,303 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>drawing shapes</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="css/normalize.css" />
+		<style>
+			canvas {
+				border: 1px dashed #00f;
+			}
+		</style>
+	</head>
+	<body onload="draw();">
+		<h1>使用canvas来绘制图形</h1>
+		<section>
+			<h2>canvas默认的图形绘制：矩形</h2>
+			<canvas id="default_canvas"></canvas>
+			<div>
+				<p>canvas提供了三种方法绘制矩形</p>
+				<ul>
+					<li>fillRect(x, y, width, height)</li>
+					<li>strokeRect(x, y, width, height)</li>
+					<li>clearRect(x, y, width, height)</li>
+				</ul>
+				<mark>x与y指定了在canvas画布上所绘制的矩形的左上角（相对于原点）的坐标。width和height设置矩形的尺寸。</mark>
+			</div>
+		</section>
+		<section>
+			<h2>绘制一个三角形</h2>
+			<canvas id="triangle_canvas"></canvas>
+			<div>
+				<p>绘制路径的要素</p>
+				<ul>
+					<li>beginPath()  新建一条路径</li>
+					<li>moveTo()  第一条路径构造命令</li>
+					<li>lineTo()  笔触的移动</li>
+					<li>closePath()  笔画路径（不是必需的）</li>
+					<li>troke()  通过线条来绘制图形轮廓</li>
+					<li>fill()  通过填充路径的内容区域生成实心的图形</li>
+				</ul>
+			</div>
+		</section>
+		<section>
+			<h2>移动笔触</h2>
+			<canvas id="moveto"></canvas>
+			<h3>
+				moveTo(x,y)  将笔触移动到指定的坐标x以及y上
+			</h3>
+		</section>
+		<section>
+			<h2>线</h2>
+			<canvas id="lineto_canvas"></canvas>
+			<h3>lineTo(x, y)  绘制一条从当前位置到指定x以及y位置的直线</h3>
+		</section>
+		<section>
+			<h2>圆弧（Arcs）</h2>
+			<canvas id="arc_canvas"></canvas>
+			<h3>
+				arc(x, y, radius, startAngle, endAngle, anticlockwise)
+			</h3>
+			<p>
+				 x,y为绘制圆弧所在圆上的圆心坐标。radius为半径。startAngle以及engAngle参数用弧度定义了开始以及结束的弧度。这些都是以x轴为基准。参数anticlockwise 为一个布尔值。为true时，是逆时针方向，否则顺时针方向。
+			</p>
+			<mark>startAngle, endAngle以圆的右边点、顺时针计算；单位是弧度，不是度数。角度与弧度的js表达式:radians=(Math.PI/180)*degrees。</mark>
+		</section>
+		<section>
+			<h2>贝塞尔（bezier）以及二次贝塞尔</h2>
+			<canvas id="quadratic_canvas"></canvas>
+			<h3>quadraticCurveTo(cp1x, cp1y, x, y)<br />绘制二次贝塞尔曲线，x,y为结束点，cp1x,cp1y为控制点。</h3>
+			<canvas id="bezier_canvas"></canvas>
+			<h3>bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)<br />绘制三次贝塞尔曲线，x,y为结束点，cp1x,cp1y为控制点一，cp2x,cp2y为控制点二。</h3>
+		</section>
+		<section>
+			<h2>组合使用</h2>
+			<canvas id="demo_canvas"></canvas>
+		</section>
+		<footer>
+			<nav>
+				<ul>
+					<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/Canvas_tutorial/Drawing_shapes" target="_blank">source from mozilla</a></li>
+					<li><a class="next-page" href="using_images.html">next page</a></li>
+				</ul>
+			</nav>
+		</footer>
+		<script>
+			function draw() {
+				var canvas = document.getElementById("default_canvas");
+				var triangle_canvas = document.getElementById("triangle_canvas");
+				var moveto_canvas = document.getElementById("moveto_canvas");
+				var lineto_canvas = document.getElementById("lineto_canvas");
+				var arc_canvas = document.getElementById("arc_canvas");
+				var quadratic_canvas = document.getElementById("quadratic_canvas");
+				var bezier_canvas = document.getElementById("bezier_canvas");
+				var demo_canvas = document.getElementById("demo_canvas");
+
+
+				if (canvas.getContext) {
+					// 绘制默认矩形
+					var ctx = canvas.getContext("2d");
+
+					ctx.fillRect(25,25,100,100);
+					ctx.clearRect(45,45,60,60);
+					ctx.strokeRect(50,50,50,50);
+
+					ctx.beginPath();
+					ctx.rect(200,50,50,50);
+					ctx.stroke();
+
+					// 绘制三角形
+					var triangle_ctx = triangle_canvas.getContext("2d");
+
+					triangle_ctx.beginPath();
+					triangle_ctx.moveTo(75,50);
+					triangle_ctx.lineTo(100,75);
+					triangle_ctx.lineTo(100,25);
+					triangle_ctx.fill();
+
+					// 移动笔触演示
+					var moveto_ctx = moveto.getContext("2d");
+
+					moveto_ctx.beginPath();
+				    moveto_ctx.arc(75,75,50,0,Math.PI*2,true); // 绘制
+				    //moveto_ctx.moveTo(110,75);
+				    moveto_ctx.arc(75,75,35,0,Math.PI,false);   // 口(顺时针)
+				    //moveto_ctx.moveTo(65,65);
+				    moveto_ctx.arc(60,65,5,0,Math.PI*2,true);  // 左眼
+				    //moveto_ctx.moveTo(95,65);
+				    moveto_ctx.arc(90,65,5,0,Math.PI*2,true);  // 右眼
+				    moveto_ctx.stroke();
+
+				    /**
+				     *  线条演示
+				     *  绘制两个三角形
+				    **/
+				    var lineto_ctx = lineto_canvas.getContext("2d");
+
+				    lineto_ctx.beginPath();
+				    lineto_ctx.moveTo(25,25);
+				    lineto_ctx.lineTo(75,25);
+				    lineto_ctx.lineTo(25,75);
+				    lineto_ctx.fill(); // 路径使用填充（filled）时，路径自动闭合
+
+				    lineto_ctx.beginPath();
+				    lineto_ctx.moveTo(85,85);
+				    lineto_ctx.lineTo(35,85);
+				    lineto_ctx.lineTo(85,35);
+				    lineto_ctx.closePath();
+				    lineto_ctx.stroke();  // 使用描边（stroked）则不会自动闭合路径
+
+				    /**
+				     *  绘制圆
+				     *  [4, 3] 4行3列
+				     * 	0, 2行顺时针
+				     *  1, 3行逆时针
+				    **/
+				    arc_canvas.height = 200;
+				    var arc_ctx = arc_canvas.getContext("2d");
+
+				    var x, y, radius, startAngle, endAngle, anticlockwise, i, j;
+
+				    for (i=0; i<4; i++) {
+				    	for (j=0; j<3; j++) {
+				    		arc_ctx.beginPath();
+
+				    		x = 25 + j*50;
+				    		y = 25 + i*50;
+				    		radius = 20;
+				    		startAngle = 0;
+				    		endAngle = Math.PI + (Math.PI * j)/2;
+				    		anticlockwise = i%2===0 ? false : true;  
+
+				    		arc_ctx.arc(x,y,radius,startAngle,endAngle,anticlockwise);
+
+				    		if (i>1) {
+				    			arc_ctx.fill();
+				    		} else {
+				    			arc_ctx.stroke();
+				    		}
+				    	}
+				    }	
+
+
+				    /**
+				     *  二次曲线
+				    **/
+				    var quadratic_ctx = quadratic_canvas.getContext("2d");
+
+				    quadratic_ctx.beginPath();
+				    quadratic_ctx.moveTo(75,25);
+				    quadratic_ctx.quadraticCurveTo(25,25,25,62.5);
+				    quadratic_ctx.quadraticCurveTo(25,100,50,100);
+				    quadratic_ctx.quadraticCurveTo(50,120,30,125);
+				    quadratic_ctx.quadraticCurveTo(60,120,65,100);
+			        quadratic_ctx.quadraticCurveTo(125,100,125,62.5);
+			        quadratic_ctx.quadraticCurveTo(125,25,75,25);
+				    quadratic_ctx.stroke();
+
+				    /**
+				     *  贝塞尔曲线
+				    **/
+				    var bezier_ctx = bezier_canvas.getContext("2d");
+
+			        bezier_ctx.beginPath();
+			        bezier_ctx.moveTo(75,40);
+			        bezier_ctx.bezierCurveTo(75,37,70,25,50,25);
+			        bezier_ctx.bezierCurveTo(20,25,20,62.5,20,62.5);
+			        bezier_ctx.bezierCurveTo(20,80,40,102,75,120);
+			        bezier_ctx.bezierCurveTo(110,102,130,80,130,62.5);
+			        bezier_ctx.bezierCurveTo(130,62.5,130,25,100,25);
+			        bezier_ctx.bezierCurveTo(85,25,75,37,75,40);
+			        bezier_ctx.fill();
+
+
+			        /**
+			         *  组合使用demo
+			        **/
+			        demo_canvas.height = 500;
+			        var demo_ctx = demo_canvas.getContext("2d");
+
+			        roundedRect(demo_ctx,12,12,150,150,15);
+				    roundedRect(demo_ctx,19,19,150,150,9);
+				    roundedRect(demo_ctx,53,53,49,33,10);
+				    roundedRect(demo_ctx,53,119,49,16,6);
+				    roundedRect(demo_ctx,135,53,49,33,10);
+				    roundedRect(demo_ctx,135,119,25,49,10);
+
+				    demo_ctx.beginPath();
+			        demo_ctx.arc(37,37,13,Math.PI/7,-Math.PI/7,false);
+			        demo_ctx.lineTo(31,37);
+			        demo_ctx.fill();
+
+			        for(var i=0;i<8;i++){
+		              demo_ctx.fillRect(51+i*16,35,4,4);
+		            }
+		            for(i=0;i<6;i++){
+	                  demo_ctx.fillRect(115,51+i*16,4,4);
+	                }
+
+	                for(i=0;i<8;i++){
+	                  demo_ctx.fillRect(51+i*16,99,4,4);
+	                }
+
+	                demo_ctx.beginPath();
+                    demo_ctx.moveTo(83,116);
+                    demo_ctx.lineTo(83,102);
+                    demo_ctx.bezierCurveTo(83,94,89,88,97,88);
+                    demo_ctx.bezierCurveTo(105,88,111,94,111,102);
+                    demo_ctx.lineTo(111,116);
+                    demo_ctx.lineTo(106.333,111.333);
+                    demo_ctx.lineTo(101.666,116);
+                    demo_ctx.lineTo(97,111.333);
+                    demo_ctx.lineTo(92.333,116);
+                    demo_ctx.lineTo(87.666,111.333);
+                    demo_ctx.lineTo(83,116);
+                    demo_ctx.fill();
+
+
+                    demo_ctx.fillStyle = "white";
+                    demo_ctx.beginPath();
+                    demo_ctx.moveTo(91,96);
+                    demo_ctx.bezierCurveTo(88,96,87,99,87,101);
+                    demo_ctx.bezierCurveTo(87,103,88,106,91,106);
+                    demo_ctx.bezierCurveTo(94,106,95,103,95,101);
+                    demo_ctx.bezierCurveTo(95,99,94,96,91,96);
+                    demo_ctx.moveTo(103,96);
+                    demo_ctx.bezierCurveTo(100,96,99,99,99,101);
+                    demo_ctx.bezierCurveTo(99,103,100,106,103,106);
+                    demo_ctx.bezierCurveTo(106,106,107,103,107,101);
+                    demo_ctx.bezierCurveTo(107,99,106,96,103,96);
+                    demo_ctx.fill();
+
+                    demo_ctx.fillStyle = "black";
+                    demo_ctx.beginPath();
+                    demo_ctx.arc(101,102,2,0,Math.PI*2,true);
+                    demo_ctx.fill();
+
+                    demo_ctx.beginPath();
+                    demo_ctx.arc(89,102,2,0,Math.PI*2,true);
+                    demo_ctx.fill();
+				} else {
+					// canvas-unsupported
+				}
+			}
+
+
+			// A utility function to draw a rectangle with rounded corners.
+			function roundedRect(ctx,x,y,width,height,radius){
+			  ctx.beginPath();
+			  ctx.moveTo(x,y+radius);
+			  ctx.lineTo(x,y+height-radius);
+			  ctx.quadraticCurveTo(x,y+height,x+radius,y+height);
+			  ctx.lineTo(x+width-radius,y+height);
+			  ctx.quadraticCurveTo(x+width,y+height,x+width,y+height-radius);
+			  ctx.lineTo(x+width,y+radius);
+			  ctx.quadraticCurveTo(x+width,y,x+width-radius,y);
+			  ctx.lineTo(x+radius,y);
+			  ctx.quadraticCurveTo(x,y,x,y+radius);
+			  ctx.stroke();
+			}
+		</script>
+	</body>
+</html>
